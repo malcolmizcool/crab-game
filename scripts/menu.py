@@ -84,7 +84,7 @@ class Menu:
         
 
         self.screen.blit(self.titletext, (SCREEN_WIDTH // 2 - self.titletext.get_width() // 2, 20))
-        self.screen.blit(self.test_image, (SCREEN_WIDTH // 2 - self.test_image.get_width() // 2, 120))
+        self.screen.blit(self.test_image, (SCREEN_WIDTH // 2 - self.test_image.get_width() // 2, 230))
         self.gui(events)
 
 class PauseMenu:

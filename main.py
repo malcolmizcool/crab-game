@@ -1,8 +1,9 @@
 import pygame
 
 
-from menu import Menu, PauseMenu
-from editor import LevelEditor
+from scripts.menu import Menu, PauseMenu
+from scripts.player import Player
+from scripts.editor import LevelEditor
 from data.constants import *
 
 pygame.init()
@@ -62,6 +63,7 @@ class Game:
         self.level_editor = LevelEditor(self)
         self.pause = PauseMenu(self, self.screen, self.debugState)
 
+        self.player = Player(self, self.screen, self.debugState)
 
     def run(self):
         while self.running:
@@ -78,10 +80,12 @@ class Game:
 
 
             elif self.screenState == "game":
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_ESCAPE:
+                for event in events:
+                    if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                         self.screenState = "pause"
-                self.screen.fill((0, 255, 0))
+                self.screen.fill((54, 60, 66))
+
+                self.player.update(events)
 
             elif self.screenState == "gameover":
                 pass
@@ -93,6 +97,10 @@ class Game:
                 self.level_editor.run(events)
 
             elif self.screenState == "pause":
+                for event in events:
+                    if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                        self.player.movement = [False, False, False, False]
+                        self.screenState = "game"
                 self.pause.gui(events)
 
 
