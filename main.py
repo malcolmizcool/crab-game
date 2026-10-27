@@ -2,8 +2,9 @@ import pygame
 
 
 from scripts.menu import Menu, PauseMenu
-from scripts.player import Player
 from scripts.editor import LevelEditor
+from scripts.gamescene import GameScene
+from scripts.gameover import GameOver
 from data.constants import *
 
 pygame.init()
@@ -59,11 +60,13 @@ class Game:
         self.screenState = "menu" #default screen state. 
         self.debugState = False 
 
-        self.menu = Menu(self, self.screen, self.debugState)
+        self.menu = Menu(self, self.screen)
         self.level_editor = LevelEditor(self)
-        self.pause = PauseMenu(self, self.screen, self.debugState)
+        self.pause = PauseMenu(self, self.screen)
+        self.scene = GameScene(self, self.screen)
+        self.gameover = GameOver(self, self.screen)
 
-        self.player = Player(self, self.screen, self.debugState)
+        
 
     def run(self):
         while self.running:
@@ -71,6 +74,8 @@ class Game:
             for event in events: #quit event
                 if event.type == pygame.QUIT:
                     self.running = False
+                if event.type == pygame.KEYDOWN and event.key == pygame.K_BACKQUOTE:
+                    self.debugState = not self.debugState
 
 
 
@@ -83,12 +88,10 @@ class Game:
                 for event in events:
                     if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                         self.screenState = "pause"
-                self.screen.fill((54, 60, 66))
-
-                self.player.update(events)
+                self.scene.run(events)
 
             elif self.screenState == "gameover":
-                pass
+                self.gameover.run(events)
 
             elif self.screenState == "settings":
                 self.screen.fill((0, 0, 0)) 
@@ -99,7 +102,7 @@ class Game:
             elif self.screenState == "pause":
                 for event in events:
                     if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-                        self.player.movement = [False, False, False, False]
+                        self.scene.player.movement = [False, False, False, False]
                         self.screenState = "game"
                 self.pause.gui(events)
 
@@ -114,8 +117,11 @@ class Game:
     def change_screen_state(self, new_state):
         self.screenState = new_state
 
+    def new_game(self):
+        self.scene = GameScene(self, self.screen)
+        self.change_screen_state("game")
+
     def mouse_pos(self):
-        # the window is SCALE times bigger than self.screen, so convert to game pixels
         x, y = pygame.mouse.get_pos()
         return x // SCALE, y // SCALE
 

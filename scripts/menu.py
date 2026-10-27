@@ -21,10 +21,9 @@ def arrange_buttons(buttons, game):
 
 
 class Menu:
-    def __init__(self, game, screen, debugState):
+    def __init__(self, game, screen):
         self.game = game
         self.screen = screen
-        self.debugState = debugState
 
         self.menuState = "home" #shows the save files. when a file is selected, start game and load the save file
         self.titletext = self.game.font.render("super cool crab game!", True, (255, 255, 255))
@@ -55,7 +54,7 @@ class Menu:
         self.game.change_screen_state("editor")
 
     def new_game(self):
-        self.game.change_screen_state("game")
+        self.game.new_game()
 
     def start_game(self):
         self.game.change_screen_state("game")
@@ -70,9 +69,6 @@ class Menu:
 
         self.screen.fill((0, 0, 0)) 
 
-        if self.debugState: 
-            pass
-
 
         for event in events:
             if event.type == pygame.KEYDOWN:
@@ -84,14 +80,13 @@ class Menu:
         
 
         self.screen.blit(self.titletext, (SCREEN_WIDTH // 2 - self.titletext.get_width() // 2, 20))
-        self.screen.blit(self.test_image, (SCREEN_WIDTH // 2 - self.test_image.get_width() // 2, 230))
+        self.screen.blit(self.test_image, (SCREEN_WIDTH // 2 - self.test_image.get_width() // 2, 110))
         self.gui(events)
 
 class PauseMenu:
-    def __init__(self, game, screen, debugState):
+    def __init__(self, game, screen):
         self.game = game
         self.screen = screen
-        self.debugState = debugState
 
         button_labels_and_actions = [
             ("resume", self.resume_game),
