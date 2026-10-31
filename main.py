@@ -26,7 +26,7 @@ class Button:
         pygame.draw.rect(screen, (255, 255, 255), self.rect)
 
         if self.selected:
-            pygame.draw.rect(screen, (0, 255, 0), self.rect, 1)  # Green border for selected button
+            pygame.draw.rect(screen, (0, 255, 0), self.rect, 1)  
         
         text_rect = self.text_surface.get_rect(center=self.rect.center)
         screen.blit(self.text_surface, text_rect)
@@ -53,7 +53,7 @@ class Game:
         self.screen = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT)) 
         self.clock = pygame.time.Clock()
         self.running = True
-        self.font = pygame.font.Font("assets/fonts/PixeloidSans.ttf", SCREEN_HEIGHT * 36 // 600)  
+        self.font = pygame.font.Font("assets/fonts/PixeloidSans.ttf", 9)  
         self.button = Button
 
 
@@ -61,7 +61,7 @@ class Game:
         self.debugState = False 
 
         self.menu = Menu(self, self.screen)
-        self.level_editor = LevelEditor(self)
+        self.level_editor = LevelEditor(self, self.screen)
         self.pause = PauseMenu(self, self.screen)
         self.scene = GameScene(self, self.screen)
         self.gameover = GameOver(self, self.screen)
@@ -124,6 +124,9 @@ class Game:
     def mouse_pos(self):
         x, y = pygame.mouse.get_pos()
         return x // SCALE, y // SCALE
+
+    def send_chat(self, text):
+        self.scene.chat.send(text)
 
 
 

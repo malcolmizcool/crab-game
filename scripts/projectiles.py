@@ -30,10 +30,12 @@ class Shot:
         self.dying = False
         self.death_frame = 0
 
-    def update(self, tilemap):
+        self.modifiers = []
+
+    def update(self, solids):
         self.time_active += 1
 
-        if self.range == self.speed * self.time_active:
+        if self.range <= self.speed * self.time_active:
             self.kill()
 
         if self.dying:
@@ -48,14 +50,15 @@ class Shot:
         if self.pos[0] > SCREEN_WIDTH + 10 or self.pos[0] < -10 or self.pos[1] > SCREEN_HEIGHT + 10 or self.pos[1] < -10:
             self.show_death_animation = True
             self.alive = False
-            
+
+        for modifier in self.modifiers:
+            modifier.update(self)
 
         if not self.spectral:
-            for tile in tilemap:
-                if tile.alive and tile.collision:
-                    rect = self.hitbox()
-                    if rect.colliderect(tile.hitbox()):
-                        self.kill()
+            for solid in solids:
+                if self.hitbox().colliderect(solid):
+                    self.kill()
+                    break
                         
 
 
